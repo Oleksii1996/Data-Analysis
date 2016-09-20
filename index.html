@@ -3,17 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>Data analysis</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <section>
     <form>
         <h1>Анализ данных</h1>
         <h3>Первичный статистический анализ. Часть I</h3>
-        <input type="file" accept="text/*" onchange="loadFile(this.files)"/>
+
+        <input id="loadField" type="file" accept="text/*" onchange="loadFile(this.files)"/>
+
         <button id="buildVarRow">Построить вариационный ряд</button>
+        <br><br><br>
+
+        <table id="table">
+            <th colspan="6">Вариационный ряд</th>
+            <tr>
+                <td>№</td>
+                <td>Исходные значения</td>
+                <td>Значения варианты</td>
+                <td>Частота</td>
+                <td>Относительная частота</td>
+                <td>Значения емпирической функции распределения</td>
+            </tr>
+        </table>
+
     </form>
 </section>
 
+<script src="jquery-3.1.0.min.js"></script>
 <script src="service.js"></script>
 </body>
 </html>
