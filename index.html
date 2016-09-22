@@ -9,6 +9,7 @@
 <section>
     <form>
         <h1>Анализ данных</h1>
+        <hr>
         <h3>Первичный статистический анализ. Часть I</h3>
 
         <input type="file" accept="text/*" onchange="loadFile(this.files)"/>
@@ -27,6 +28,29 @@
             </tr>
         </table>
 
+        <br><br><br>
+
+    </form>
+
+</section>
+
+<section>
+    <form class="nextForms">
+        <br><br><br>
+        <button id="buildClasses">Разбить вариационный ряд на классы</button>
+        <button id="drawCharts">Построить графики</button>
+        <br><br><br>
+        <table id="classes">
+            <th colspan="5">Классы вариационного ряда</th>
+            <tr>
+                <td>№</td>
+                <td>Границы класса</td>
+                <td>Частота</td>
+                <td>Относительная частота</td>
+                <td>Значения емпирической функции распределения</td>
+            </tr>
+        </table>
+        <br><br><br>
     </form>
 </section>
 
