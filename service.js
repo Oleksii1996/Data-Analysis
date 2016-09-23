@@ -11,28 +11,29 @@
             data = e.target.result;
             data = data.split("\n");
 
-            buildTable();
+            insertGivenData();
         };
         reader.readAsText(file);
     }
 
-    // перестраиваем исходную выборку в вариационный ряд вида data[варианта][частота варианты]
-    // выводим полученные данные в таблицу
-    function buildTable() {
-
-        var tmp, tmpArr = [], j;
-
-        // копируем и храним исходную выборку для красивого вывода в таблицу
-        for (var i = 0, len = data.length; i < len; i++) {
-            tmpArr.push(data[i]);
-        }
-
+    // вставляем исходную выборку в таблицу
+    function insertGivenData() {
         dimension = data.length;
+        var table = $("#table");
+        for (var i = 0, len = data.length; i < len; i++) {
+            table.append("<tr id='tr" + i + "'><td>" + (i + 1) + "</td><td>" + data[i] + "</td></tr>>");
+        }
+    }
+
+    // перестраиваем исходную выборку в вариационный ряд вида data[варианта][частота варианты]
+    // дописываем полученные данные в таблицу
+    window.$("#buildVarRow").click(function() {
+        var tmp, j;
 
         data = data.sort();
 
         // перестраиваем выборку в вариационный ряд
-        for (i = 0; i < data.length; i++) {
+        for (var i = 0; i < data.length; i++) {
             tmp = data[i];
             data[i] = [];
             data[i].push(tmp);
@@ -52,28 +53,22 @@
         }
 
         tmp = 0;
-        // выводим результаты в таблицу
-        for (i = 0, len = tmpArr.length; i < len; i++) {
-            if (i < data.length) {
+        var table = $("#table");
 
-                if (i == 0) {
-                    tmp = 0;
-                } else {
-                    tmp += data[i - 1][1] / dimension;
-                }
-
-                $("#table").append("<tr><td>" + (i + 1) + "</td><td>" + tmpArr[i] + "</td>"
-                    + "<td>" + data[i][0] + "</td>" + "<td>" + data[i][1] + "</td>" + "<td>"
-                    + (data[i][1] / dimension).toFixed(4) + "</td><td>" + tmp.toFixed(4) + "</td></tr>");
-
+        // дописываем таблицу
+        for (i = 0, len = data.length; i < len; i++) {
+            if (i == 0) {
+                tmp = 0;
             } else {
-                $("#table").append("<tr><td>" + (i + 1) + "</td><td>" + tmpArr[i] + "</td></tr>");
+                tmp += data[i - 1][1] / dimension;
             }
+            $("#tr" + i).append("<td>" + data[i][0] + "</td>" + "<td>" + data[i][1] + "</td>" + "<td>"
+                + (data[i][1] / dimension).toFixed(4) + "</td><td>" + tmp.toFixed(4) + "</td>");
         }
-    }
+    });
 
     //
-    window.$("#buildClasses").click(function () { debugger;
+    window.$("#buildClasses").click(function () {
         var numberClasses = 0;
         if ((dimension % 2) != 0) {
             numberClasses++;
@@ -83,8 +78,23 @@
         } else {
             numberClasses = Math.trunc(Math.cbrt(dimension));
         }
-        alert(numberClasses);
-        alert(data);
+
+        var j = 0, classes = [];
+        //
+        for (var i = 0; i < numberClasses; i++) {
+            classes[i] = [];
+            tmp = j;
+            for (; j < (data.length / numberClasses) + tmp; j++) {
+                classes[i].push(data[j]);
+            }
+        }
+        debugger;
+        //
+        var table = $("#classes");
+        for (i = 0; i < numberClasses; i++) {
+            table.append("<tr><td>" + (i+1) + "</td><td>[" + classes[i][0][0] + ", " + classes[i][numberClasses-1][0] +
+                "]</td><td></td><td></td><td></td></tr>")
+        }
     });
 
 })();
