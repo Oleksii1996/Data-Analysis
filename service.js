@@ -1,7 +1,8 @@
 (function() {
 
-    // data - исходный массив данных(выборка), dimension - размерность выборки
-    var data, dimension;
+    // data - исходный массив данных(выборка), dimension - размерность выборки,
+    // classes - разбитый на классы вариационный ряд
+    var data, dimension, classes = [];
 
     window.loadFile = function(files) {
         var file = files[0],
@@ -62,14 +63,14 @@
             } else {
                 tmp += data[i - 1][1] / dimension;
             }
-            $("#tr" + i).append("<td>" + data[i][0] + "</td>" + "<td>" + data[i][1] + "</td>" + "<td>"
+            $("#tr" + i).append("<td>" + data[i][0] + "</td><td>" + data[i][1] + "</td><td>"
                 + (data[i][1] / dimension).toFixed(4) + "</td><td>" + tmp.toFixed(4) + "</td>");
         }
     });
 
     //
     window.$("#buildClasses").click(function () {
-        var numberClasses = 0;
+        var numberClasses = 0, tmp = 0;//, h = 0;
         if ((dimension % 2) != 0) {
             numberClasses++;
         }
@@ -78,8 +79,9 @@
         } else {
             numberClasses = Math.trunc(Math.cbrt(dimension));
         }
+        //h = (data[0][0] - data[data.length-1][0]) / numberClasses;
 
-        var j = 0, classes = [];
+        var j = 0;
         //
         for (var i = 0; i < numberClasses; i++) {
             classes[i] = [];
@@ -88,12 +90,68 @@
                 classes[i].push(data[j]);
             }
         }
-        debugger;
+
         //
-        var table = $("#classes");
+        tmp = 0;
+        var table = $("#classes"), tmp2 = 0;
         for (i = 0; i < numberClasses; i++) {
+            // сумируем частоты каждого элемента в классе
+            for (j = 0; j < numberClasses; j++) {
+                tmp += classes[i][j][1];
+                if (i != 0) {
+                    tmp2 += classes[i][j][1];
+                }
+            }
             table.append("<tr><td>" + (i+1) + "</td><td>[" + classes[i][0][0] + ", " + classes[i][numberClasses-1][0] +
-                "]</td><td></td><td></td><td></td></tr>")
+                "]</td><td>" + tmp + "</td><td>" + (tmp / dimension) + "</td><td>" + (tmp2 / dimension) + "</td></tr>");
+            tmp = 0;
+        }
+    });
+
+    //
+    window.$("#drawCharts").click(function() {
+        google.charts.load("current", {packages:['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+
+        var d = [], tmp = 0;
+        d.push(["Element", "", { role: "style" } ]);
+        for (var i = 0; i < classes.length; i++) {
+            for (var j = 0; j < classes.length; j++) {
+                tmp += classes[i][j][1];
+            }
+            d.push(["", (tmp / dimension), ""]);
+            tmp = 0;
+        }
+
+        function drawChart() {
+            var data2 = google.visualization.arrayToDataTable(/*[
+                ["Element", "", { role: "style" } ],
+                ["", +data[0][0], ""],
+                ["", +data[1][0], ""],
+                ["", +data[2][0], ""],
+                ["", +data[3][0], ""]*/d
+            /*]*/);
+
+            var view = new google.visualization.DataView(data2);
+            view.setColumns([0, 1,
+                {
+                    calc: "stringify",
+                    sourceColumn: 1,
+                    type: "string",
+                    role: "annotation"
+                },
+                2]);
+
+            var options = {
+                title: "Density of Precious Metals, in g/cm^3",
+                width: "95%",
+                height: 400,
+                bar: {groupWidth: "95%"},
+                legend: {position: "none"},
+            };
+            var chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
+            chart.draw(view, options);
         }
     });
 
