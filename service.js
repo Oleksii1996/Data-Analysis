@@ -31,7 +31,17 @@
     window.$("#buildVarRow").click(function() {
         var tmp, j;
 
-        data = data.sort();
+        for (var i = 0; i < data.length; i++) {
+            data[i] = +data[i];
+        }
+        data = data.sort(function(a, b) { // По возрастанию
+            if (a > b)
+                return 1;
+            else if (a < b)
+                return -1;
+            else
+                return 0;
+        });
 
         // перестраиваем выборку в вариационный ряд
         for (var i = 0; i < data.length; i++) {
@@ -55,22 +65,20 @@
 
         tmp = 0;
         var table = $("#table");
-
         // дописываем таблицу
         for (i = 0, len = data.length; i < len; i++) {
-            if (i == 0) {
-                tmp = 0;
-            } else {
-                tmp += data[i - 1][1] / dimension;
-            }
+            // накапливаем в tmp значения относительных частот для подсчета
+            // емпирической функции распределения
+            tmp += data[i][1] / dimension;
             $("#tr" + i).append("<td>" + data[i][0] + "</td><td>" + data[i][1] + "</td><td>"
                 + (data[i][1] / dimension).toFixed(4) + "</td><td>" + tmp.toFixed(4) + "</td>");
         }
     });
 
-    //
+    // разбивка вариационного ряда на классы и запись их в таблицу
     window.$("#buildClasses").click(function () {
-        var numberClasses = 0, tmp = 0;//, h = 0;
+        var numberClasses = 0, tmp = 0, tmp2 = 0, h;
+
         if ((dimension % 2) != 0) {
             numberClasses++;
         }
@@ -79,61 +87,63 @@
         } else {
             numberClasses = Math.trunc(Math.cbrt(dimension));
         }
-        //h = (data[0][0] - data[data.length-1][0]) / numberClasses;
+
+        // h - длинна каждого отрезка
+        h = (data[data.length-1][0] - data[0][0]) / numberClasses;
 
         var j = 0;
         //
         for (var i = 0; i < numberClasses; i++) {
             classes[i] = [];
-            tmp = j;
-            for (; j < (data.length / numberClasses) + tmp; j++) {
+            while(data[j][0] <= (data[0][0] + (i+1)*h)) {
                 classes[i].push(data[j]);
+                if (j < data.length-1) {
+                    j++;
+                } else {
+                    break;
+                }
             }
         }
 
-        //
-        tmp = 0;
-        var table = $("#classes"), tmp2 = 0;
+        // пишем в таблицу классы, tmp - накапливает частотность класса,
+        // tmp2 - накапливает значения для построения емпирической функции распределения
+        var table = $("#classes");
         for (i = 0; i < numberClasses; i++) {
-            // сумируем частоты каждого элемента в классе
-            for (j = 0; j < numberClasses; j++) {
+            for (j = 0; j < classes[i].length; j++) {
+                // сумируем частоты каждого элемента в классе
                 tmp += classes[i][j][1];
-                if (i != 0) {
-                    tmp2 += classes[i][j][1];
-                }
+
+                tmp2 += classes[i][j][1];
             }
-            table.append("<tr><td>" + (i+1) + "</td><td>[" + classes[i][0][0] + ", " + classes[i][numberClasses-1][0] +
-                "]</td><td>" + tmp + "</td><td>" + (tmp / dimension) + "</td><td>" + (tmp2 / dimension) + "</td></tr>");
+
+            table.append("<tr><td>" + (i+1) + "</td><td>[" + classes[i][0][0] + ", " + classes[i][classes[i].length-1][0] +
+                "]</td><td>" + tmp.toFixed(4) + "</td><td>" + (tmp / dimension).toFixed(4) + "</td><td>" +
+                (tmp2 / dimension).toFixed(4) + "</td></tr>");
+            // сбрасываем значения tmp для подсчета новой частоты нового класса на следующей итерации
             tmp = 0;
         }
     });
 
-    //
+    // рисуем гистограмму и графики
     window.$("#drawCharts").click(function() {
         google.charts.load("current", {packages:['corechart']});
         google.charts.setOnLoadCallback(drawChart);
 
 
-        var d = [], tmp = 0;
-        d.push(["Element", "", { role: "style" } ]);
+        var dataForChart = [], tmp = 0;
+        dataForChart.push(["Element", "", { role: "style" } ]);
         for (var i = 0; i < classes.length; i++) {
-            for (var j = 0; j < classes.length; j++) {
+            for (var j = 0; j < classes[i].length; j++) {
                 tmp += classes[i][j][1];
             }
-            d.push(["", (tmp / dimension), ""]);
+            dataForChart.push(["", (tmp / dimension), ""]);
             tmp = 0;
         }
 
         function drawChart() {
-            var data2 = google.visualization.arrayToDataTable(/*[
-                ["Element", "", { role: "style" } ],
-                ["", +data[0][0], ""],
-                ["", +data[1][0], ""],
-                ["", +data[2][0], ""],
-                ["", +data[3][0], ""]*/d
-            /*]*/);
+            var data = google.visualization.arrayToDataTable(dataForChart);
 
-            var view = new google.visualization.DataView(data2);
+            var view = new google.visualization.DataView(data);
             view.setColumns([0, 1,
                 {
                     calc: "stringify",
@@ -144,13 +154,13 @@
                 2]);
 
             var options = {
-                title: "Density of Precious Metals, in g/cm^3",
+                title: "Гистограмма",
                 width: "95%",
                 height: 400,
                 bar: {groupWidth: "95%"},
                 legend: {position: "none"},
             };
-            var chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
+            var chart = new google.visualization.ColumnChart(document.getElementById("divForChart"));
             chart.draw(view, options);
         }
     });
