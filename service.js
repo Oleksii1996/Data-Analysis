@@ -25,12 +25,14 @@
     });
 
     window.$("#drawCharts").click(function() {
-        dataObj.drawCharts();
+        dataObj.drawHistogram(document.getElementById("divForHistogram"));
+        dataObj.drawChartVarRow(document.getElementById("divForChartVarRow"));
+        dataObj.drawChartClasses(document.getElementById("divForChartClasses"));
     });
 
     //
     window.$("#buildCharacterictics").click(function() {
-        var table = $("#characterictics");
+        dataObj.buildCharacterictics($("#characterictics"));
 
     });
 
