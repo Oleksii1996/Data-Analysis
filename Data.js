@@ -142,35 +142,26 @@ Data.prototype.drawHistogram = function(canvas) {
     }
 }
 
-// рисуем график емпирической функции распределения используя классы
-Data.prototype.drawChartClasses = function(canvas) {
+// рисуем график емпирической функции распределения
+Data.prototype.drawCharts = function(canvas, type) {
     google.charts.load("current", {packages:['corechart']});
     google.charts.setOnLoadCallback(drawChart);
 
-    var dataForChart = [], tmp = 0;
+    var dataForChart,
+        options = {
+        width: "95%",
+        height: 400,
+        bar: {groupWidth: "100%"},
+        legend: "none"
+    };
 
-    dataForChart.push([this.classes[0][0][0]-1,0]);
-    dataForChart.push([this.classes[0][0][0], 0]);
-    dataForChart.push([this.classes[0][0][0], NaN]);
-
-    debugger;
-    for (var i = 0, len = this.classes.length-1; i < len; i++) {
-        for (var j = 0; j < this.classes[i].length; j++) {
-            tmp += this.classes[i][j][1];
-        }
-        if (i == 0) {
-            dataForChart.push([this.classes[i][0][0], (tmp / this.dimension)]);
-            dataForChart.push([this.classes[i][this.classes[i].length-1][0], (tmp / this.dimension)]);
-            dataForChart.push([this.classes[i][this.classes[i].length-1][0], NaN]);
-        } else {
-            dataForChart.push([this.classes[i - 1][this.classes[i - 1].length - 1][0], (tmp / this.dimension)]);
-            dataForChart.push([this.classes[i][this.classes[i].length - 1][0], (tmp / this.dimension)]);
-            dataForChart.push([this.classes[i][this.classes[i].length - 1][0], NaN]);
-        }
+    if (type.search( /varRow/i ) >= 0) {
+        dataForChart = this.varRowForChart();
+        options.title = "Емпирическая функция распеределения, построенная по вариационному ряду";
+    } else if (type.search( /classes/i ) >= 0) {
+        dataForChart = this.classesForChart();
+        options.title = "Емпирическая функция распределения, построенная по классам";
     }
-
-    dataForChart.push([this.classes[i - 1][this.classes[i - 1].length - 1][0], 1]);
-    dataForChart.push([this.classes[i][this.classes[i].length - 1][0], 1]);
 
     function drawChart() {
         var data = new google.visualization.DataTable();
@@ -179,58 +170,6 @@ Data.prototype.drawChartClasses = function(canvas) {
         data.addColumn("number", "y");
 
         data.addRows(dataForChart);
-
-        var options = {
-            title: "Емпирическая функция распределения, построенная по классам",
-            width: "95%",
-            height: 400,
-            bar: {groupWidth: "100%"},
-            legend: "none"
-        };
-        var chart = new google.visualization.LineChart(canvas);
-        chart.draw(data, options);
-    }
-}
-
-// рисуем график емпирической функции распределения используя вариационный ряд
-Data.prototype.drawChartVarRow = function(canvas) {
-    google.charts.load("current", {packages:['corechart']});
-    google.charts.setOnLoadCallback(drawChart);
-
-
-    var dataForChart = [], tmp = 0;
-
-    dataForChart.push([this.data[0][0]-1,0]);
-    dataForChart.push([this.data[0][0], 0]);
-    dataForChart.push([this.data[0][0], NaN]);
-
-    for (var i = 0, len = this.data.length-1; i < len; i++) {
-        tmp += this.data[i][1];
-
-        dataForChart.push([this.data[i][0], (tmp / this.dimension)]);
-        dataForChart.push([this.data[i+1][0], (tmp / this.dimension)]);
-        dataForChart.push([this.data[i+1][0], NaN]);
-    }
-
-    dataForChart.push([this.data[this.data.length-1][0], NaN]);
-    dataForChart.push([this.data[this.data.length-1][0], 1]);
-    dataForChart.push([this.data[this.data.length-1][0]+1, 1]);
-
-    function drawChart() {
-        var data = new google.visualization.DataTable();
-
-        data.addColumn("number", "x");
-        data.addColumn("number", "y");
-
-        data.addRows(dataForChart);
-
-        var options = {
-            title: "Емпирическая функция распеределения, построенная по вариационному ряду",
-            width: "95%",
-            height: 400,
-            bar: {groupWidth: "100%"},
-            legend: "none"
-        };
 
         var chart = new google.visualization.LineChart(canvas);
         chart.draw(data, options);
@@ -239,13 +178,26 @@ Data.prototype.drawChartVarRow = function(canvas) {
 
 // строим характеристики выборки и пишем их в таблицу
 Data.prototype.buildCharacterictics = function(table) {
-    table.append("<tr><td>Среднее арифметическое</td><td>" + this.average() +
-        "</td><td>" + (Math.abs(this.expectedValue() - this.average())) +
-            "</td><td>" + (this.segment(this.average())) + "</td></tr>");
+    table.append("<tr><td>Среднее арифметическое</td><td>" + this.average().toFixed(4) +
+        "</td><td>" + 0 + "</td><td></td></tr>");
 
-    table.append("<tr><td>Медиана</td><td>" + this.median() +
-        "</td><td>" + (Math.abs(this.expectedValue() - this.median())) +
-        "</td><td>" + (this.segment(this.median())) + "</td></tr>");
+    table.append("<tr><td>Медиана</td><td>" + this.median().toFixed(4) +
+        "</td><td>-</td><td>-</td></tr>");
+
+    table.append("<tr><td>Среднеквадратическое</td><td>" + this.rMS().toFixed(4) +
+        "</td><td>" + (this.rMS() - this.average()).toFixed(4) + "</td><td></td></tr>");
+
+    table.append("<tr><td>Коэффициент ассиметрии</td><td>" + this.coefAsymmetry().toFixed(4) +
+        "</td><td>" + (this.coefAsymmetry() - this.average()).toFixed(4) + "</td><td></td></tr>");
+
+    table.append("<tr><td>Коэффициент эксцесса</td><td>" + this.coefExcess().toFixed(4) +
+        "</td><td>" + (this.coefExcess() - this.average()).toFixed(4) + "</td><td></td></tr>");
+
+    table.append("<tr><td>Коэффициент контрэксцесса</td><td>" + this.coefContrExcess().toFixed(4) +
+        "</td><td>" + (this.coefContrExcess() - this.average()).toFixed(4) + "</td><td></td></tr>");
+
+    table.append("<tr><td>Коэффициент вариации</td><td>" + this.coefVariation().toFixed(4) +
+        "</td><td>" + (this.coefVariation() - this.average()).toFixed(4) + "</td><td></td></tr>");
 }
 
 // среднее арифметическое
@@ -257,36 +209,119 @@ Data.prototype.average = function() {
     return (result / this.dimension);
 }
 
+// среднеквадратическое
+Data.prototype.rMS = function() {
+    var result = 0, average = this.average();
+    for (var i = 0, len = this.data.length; i < len; i++) {
+        result += Math.pow(this.data[i][0] - average, 2) * this.data[i][1];
+    }
+
+    return Math.sqrt(result / this.dimension-1);
+}
+
 // медиана
 Data.prototype.median = function() {
-    var tmpData = [];
-    for (var i = 0, len = this.data.length; i < len; i++) {
-        for (var j = 0; j < this.data[i][1]; j++) {
+    var tmpData = [], i, j;
+    for (i = 0, len = this.data.length; i < len; i++) {
+        for (j = 0; j < this.data[i][1]; j++) {
             tmpData.push(this.data[i][0]);
         }
     }
 
     if (this.dimension % 2 == 1) {
-        return tmpData[Math.trunc(this.dimension / 2) - 1];
+        return tmpData[Math.trunc(this.dimension / 2)];
     } else {
         return (tmpData[this.dimension / 2] + tmpData[(this.dimension / 2) + 1]) / 2;
     }
 }
 
-// математическое ожидание
-Data.prototype.expectedValue = function() {
-    var result = 0;
-    for (var i = 0, len = this.data.length; i < len; i++) {
-        result += this.data[i][0] * (this.data[i][1] / this.dimension);
+// коэффициент ассиметрии
+Data.prototype.coefAsymmetry = function() {
+    var o = this.sigma(), A = 0, average = this.average(), i;
+
+    for (i = 0, len = this.data.length; i < len; i++) {
+        A += Math.pow(this.data[i][0] - average, 3) * this.data[i][1];
     }
+    A = A / (this.dimension * Math.pow(o, 3));
+    A = Math.sqrt(this.dimension * (this.dimension - 1)) / (this.dimension - 2) * A;
+    return A;
+}
+
+// коэффициент эксцесса
+Data.prototype.coefExcess = function() {
+    var result = 0, average = this.average();
+    for (var i = 0, len = this.data.length; i < len; i++) {
+        result += Math.pow(this.data[i][0] - average, 4) * this.data[i][1];
+    }
+    result = result / (this.dimension * Math.pow(this.sigma(), 4));
+    result = ((Math.pow(this.dimension, 2) - 1)/((this.dimension-2) * (this.dimension - 3))) * (result - 3 + 6 * (this.dimension + 1));
     return result;
 }
 
-// возвращает кдасс, в котором лежит заданное значение
-Data.prototype.segment = function(value) {
-    for (var i = 0, len = this.classes.length; i < len; i++) {
-        if (value >= this.classes[i][0][0] && value <= this.classes[i][this.classes[i].length-1][0]) {
-            return ("[" + this.classes[i][0][0] + ", " + this.classes[i][this.classes[i].length-1][0] + "]");
-        }
+// коэффициент контрэксцесса
+Data.prototype.coefContrExcess = function() {
+    return 1 / Math.sqrt(Math.abs(this.coefExcess()));
+}
+
+// коэффициент вариации Пирсона
+Data.prototype.coefVariation = function() {
+    return this.rMS() / this.average();
+}
+
+// среднеквадратичное смещенное отклонение
+Data.prototype.sigma = function() {
+    var o = 0, average = this.average(), i;
+    for (i = 0, len = this.data.length; i < len; i++) {
+        o += Math.pow(this.data[i][0], 2) * this.data[i][1] - Math.pow(average, 2);
     }
+    o = Math.sqrt(o / this.dimension);
+    return o;
+}
+
+// формируем данные для графика из вариационного ряда
+Data.prototype.varRowForChart = function() {
+    var dataForChart = [], tmp = 0, i;
+
+    dataForChart.push([this.data[0][0]-1,0]);
+    dataForChart.push([this.data[0][0], 0]);
+    dataForChart.push([this.data[0][0], NaN]);
+
+    for (i = 0, len = this.data.length-1; i < len; i++) {
+        tmp += this.data[i][1];
+
+        dataForChart.push([this.data[i][0], (tmp / this.dimension)]);
+        dataForChart.push([this.data[i+1][0], (tmp / this.dimension)]);
+        dataForChart.push([this.data[i+1][0], NaN]);
+    }
+
+    dataForChart.push([this.data[this.data.length-1][0], NaN]);
+    dataForChart.push([this.data[this.data.length-1][0], 1]);
+    dataForChart.push([this.data[this.data.length-1][0]+1, 1]);
+
+    return dataForChart;
+}
+
+// формируем данные для графика из классов
+Data.prototype.classesForChart = function() {
+    var dataForChart = [], tmp = 0, i, j;
+
+    dataForChart.push([this.classes[0][0][0]-1,0]);
+    dataForChart.push([this.classes[0][0][0], 0]);
+    dataForChart.push([this.classes[0][0][0], NaN]);
+
+    for (i = 0, len = this.classes.length-1; i < len; i++) {
+        for (j = 0; j < this.classes[i].length; j++) {
+            tmp += this.classes[i][j][1];
+        }
+        dataForChart.push([this.classes[i][0][0], (tmp / this.dimension)]);
+        dataForChart.push([this.classes[i+1][0][0], (tmp / this.dimension)]);
+        dataForChart.push([this.classes[i+1][0][0], NaN]);
+    }
+
+    dataForChart.push([this.classes[this.classes.length-1][0][0], NaN]);
+    dataForChart.push([this.classes[this.classes.length-1][0][0], 1]);
+    var t = this.classes[this.classes.length-1], t2 = t[t.length-1][0];
+    dataForChart.push([t2 + 1, 1]);
+
+    return dataForChart;
 }

@@ -26,8 +26,8 @@
 
     window.$("#drawCharts").click(function() {
         dataObj.drawHistogram(document.getElementById("divForHistogram"));
-        dataObj.drawChartVarRow(document.getElementById("divForChartVarRow"));
-        dataObj.drawChartClasses(document.getElementById("divForChartClasses"));
+        dataObj.drawCharts(document.getElementById("divForChartVarRow"), "varrow");
+        dataObj.drawCharts(document.getElementById("divForChartClasses"), "classes");
     });
 
     //
