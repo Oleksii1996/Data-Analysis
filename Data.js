@@ -78,10 +78,10 @@ Data.prototype.buildClasses = function(table) {
     h = (this.data[this.data.length-1][0] - this.data[0][0]) / numberClasses;
 
     var j = 0;
-    //
+    // добавление элементов в классы
     for (var i = 0; i < numberClasses; i++) {
         this.classes[i] = [];
-        while(this.data[j][0] <= (this.data[0][0] + (i+1)*h)) {
+        while (this.data[j][0] <= (this.data[0][0] + (i+1)*h)) {
             this.classes[i].push(this.data[j]);
             if (j < this.data.length-1) {
                 j++;
@@ -237,16 +237,56 @@ Data.prototype.drawChartVarRow = function(canvas) {
     }
 }
 
-//
+// строим характеристики выборки и пишем их в таблицу
 Data.prototype.buildCharacterictics = function(table) {
-    table.append("<tr><td>Среднее арифметическое</td><td>" + this.average() + "</td></tr>");
+    table.append("<tr><td>Среднее арифметическое</td><td>" + this.average() +
+        "</td><td>" + (Math.abs(this.expectedValue() - this.average())) +
+            "</td><td>" + (this.segment(this.average())) + "</td></tr>");
+
+    table.append("<tr><td>Медиана</td><td>" + this.median() +
+        "</td><td>" + (Math.abs(this.expectedValue() - this.median())) +
+        "</td><td>" + (this.segment(this.median())) + "</td></tr>");
 }
 
-//
+// среднее арифметическое
 Data.prototype.average = function() {
     var result = 0;
     for(var i = 0, len = this.data.length; i < len; i++) {
-        result += this.data[i][0]*this.data[i][1];
+        result += this.data[i][0] * this.data[i][1];
+    }
+    return (result / this.dimension);
+}
+
+// медиана
+Data.prototype.median = function() {
+    var tmpData = [];
+    for (var i = 0, len = this.data.length; i < len; i++) {
+        for (var j = 0; j < this.data[i][1]; j++) {
+            tmpData.push(this.data[i][0]);
+        }
+    }
+
+    if (this.dimension % 2 == 1) {
+        return tmpData[Math.trunc(this.dimension / 2) - 1];
+    } else {
+        return (tmpData[this.dimension / 2] + tmpData[(this.dimension / 2) + 1]) / 2;
+    }
+}
+
+// математическое ожидание
+Data.prototype.expectedValue = function() {
+    var result = 0;
+    for (var i = 0, len = this.data.length; i < len; i++) {
+        result += this.data[i][0] * (this.data[i][1] / this.dimension);
     }
     return result;
+}
+
+// возвращает кдасс, в котором лежит заданное значение
+Data.prototype.segment = function(value) {
+    for (var i = 0, len = this.classes.length; i < len; i++) {
+        if (value >= this.classes[i][0][0] && value <= this.classes[i][this.classes[i].length-1][0]) {
+            return ("[" + this.classes[i][0][0] + ", " + this.classes[i][this.classes[i].length-1][0] + "]");
+        }
+    }
 }
