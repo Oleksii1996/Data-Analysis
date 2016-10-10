@@ -1,7 +1,11 @@
 table, tr, td, th {
-    border: 1px solid black;
+    border: 1px solid lightgrey;
     border-collapse: collapse;
     padding: 5px;
+}
+
+th {
+    background-color: lightgrey;
 }
 
 table {

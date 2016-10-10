@@ -5,7 +5,7 @@ function Data(data) {
     this.data = data, this.dimension = data.length, this.classes = [];
 }
 
-//
+// записывает полученные данные в таблицу
 Data.prototype.insertBasicData = function(table) {
     for (var i = 0, len = this.data.length; i < len; i++) {
         table.append("<tr id='tr" + i + "'><td>" + (i + 1) + "</td><td>" + this.data[i] + "</td></tr>>");
@@ -178,14 +178,16 @@ Data.prototype.drawCharts = function(canvas, type) {
 
 // строим характеристики выборки и пишем их в таблицу
 Data.prototype.buildCharacterictics = function(table) {
-    table.append("<tr><td>Среднее арифметическое</td><td>" + this.average().toFixed(4) +
-        "</td><td>" + 0 + "</td><td></td></tr>");
+    table.append("<tr><td>Среднее арифметическое</td><td>" + this.average().toFixed(4) + "</td>" +
+        "<td>" + 0 + "</td>" +
+        "<td></td></tr>");
 
     table.append("<tr><td>Медиана</td><td>" + this.median().toFixed(4) +
         "</td><td>-</td><td>-</td></tr>");
 
     table.append("<tr><td>Среднеквадратическое</td><td>" + this.rMS().toFixed(4) +
-        "</td><td>" + (this.rMS() - this.average()).toFixed(4) + "</td><td></td></tr>");
+        "</td><td>" + (this.rMS() - this.average()).toFixed(4) + "</td>" +
+        "<td></td></tr>");
 
     table.append("<tr><td>Коэффициент ассиметрии</td><td>" + this.coefAsymmetry().toFixed(4) +
         "</td><td>" + (this.coefAsymmetry() - this.average()).toFixed(4) + "</td><td></td></tr>");
@@ -209,6 +211,11 @@ Data.prototype.average = function() {
     return (result / this.dimension);
 }
 
+// доверительный интервал среднего арифметического
+Data.prototype.getAverageSegment = function() {
+    return this.rMS() / Math.sqrt(this.dimension);
+}
+
 // среднеквадратическое
 Data.prototype.rMS = function() {
     var result = 0, average = this.average();
@@ -217,6 +224,11 @@ Data.prototype.rMS = function() {
     }
 
     return Math.sqrt(result / this.dimension-1);
+}
+
+// доверительный интервал среднеквадратического
+Data.prototype.getRmsSegment = function() {
+    return this.rMS() / Math.sqrt(2 * this.dimension);
 }
 
 // медиана
