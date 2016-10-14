@@ -110,72 +110,6 @@ Data.prototype.buildClasses = function(table) {
     }
 }
 
-// рисуем гистограмму
-Data.prototype.drawHistogram = function(canvas) {
-    google.charts.load("current", {packages:['corechart']});
-    google.charts.setOnLoadCallback(drawH);
-
-
-    var dataForChart = [], tmp = 0;
-    dataForChart.push(["Element", "", { role: "annotation" } ]);
-    for (var i = 0; i < this.classes.length; i++) {
-        for (var j = 0; j < this.classes[i].length; j++) {
-            tmp += this.classes[i][j][1];
-        }
-        dataForChart.push(["[" + this.classes[i][0][0] + ", " + this.classes[i][this.classes[i].length-1][0] + "]",
-            (tmp / this.dimension), (tmp / this.dimension)]);
-        tmp = 0;
-    }
-
-    function drawH() {
-        var data = google.visualization.arrayToDataTable(dataForChart);
-
-        var options = {
-            title: "Гистограмма",
-            width: "95%",
-            height: 400,
-            bar: {groupWidth: "95%"},
-            legend: "none"
-        };
-        var chart = new google.visualization.ColumnChart(canvas);
-        chart.draw(data, options);
-    }
-}
-
-// рисуем график емпирической функции распределения
-Data.prototype.drawCharts = function(canvas, type) {
-    google.charts.load("current", {packages:['corechart']});
-    google.charts.setOnLoadCallback(drawChart);
-
-    var dataForChart,
-        options = {
-        width: "95%",
-        height: 400,
-        bar: {groupWidth: "100%"},
-        legend: "none"
-    };
-
-    if (type.search( /varRow/i ) >= 0) {
-        dataForChart = this.varRowForChart();
-        options.title = "Емпирическая функция распеределения, построенная по вариационному ряду";
-    } else if (type.search( /classes/i ) >= 0) {
-        dataForChart = this.classesForChart();
-        options.title = "Емпирическая функция распределения, построенная по классам";
-    }
-
-    function drawChart() {
-        var data = new google.visualization.DataTable();
-
-        data.addColumn("number", "x");
-        data.addColumn("number", "y");
-
-        data.addRows(dataForChart);
-
-        var chart = new google.visualization.LineChart(canvas);
-        chart.draw(data, options);
-    }
-}
-
 // строим характеристики выборки и пишем их в таблицу
 Data.prototype.buildCharacterictics = function(table) {
     table.append("<tr><td>Среднее арифметическое</td><td>" + this.average().toFixed(4) + "</td>" +
@@ -336,4 +270,70 @@ Data.prototype.classesForChart = function() {
     dataForChart.push([t2 + 1, 1]);
 
     return dataForChart;
+}
+
+// рисуем гистограмму
+Data.prototype.drawHistogram = function(canvas) {
+    google.charts.load("current", {packages:['corechart']});
+    google.charts.setOnLoadCallback(drawH);
+
+
+    var dataForChart = [], tmp = 0;
+    dataForChart.push(["Element", "", { role: "annotation" } ]);
+    for (var i = 0; i < this.classes.length; i++) {
+        for (var j = 0; j < this.classes[i].length; j++) {
+            tmp += this.classes[i][j][1];
+        }
+        dataForChart.push(["[" + this.classes[i][0][0] + ", " + this.classes[i][this.classes[i].length-1][0] + "]",
+            (tmp / this.dimension), (tmp / this.dimension)]);
+        tmp = 0;
+    }
+
+    function drawH() {
+        var data = google.visualization.arrayToDataTable(dataForChart);
+
+        var options = {
+            title: "Гистограмма",
+            width: "95%",
+            height: 400,
+            bar: {groupWidth: "100%"},
+            legend: "none"
+        };
+        var chart = new google.visualization.ColumnChart(canvas);
+        chart.draw(data, options);
+    }
+}
+
+// рисуем график емпирической функции распределения
+Data.prototype.drawCharts = function(canvas, type) {
+    google.charts.load("current", {packages:['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    var dataForChart,
+        options = {
+            width: "95%",
+            height: 400,
+            bar: {groupWidth: "100%"},
+            legend: "none"
+        };
+
+    if (type.search( /varRow/i ) >= 0) {
+        dataForChart = this.varRowForChart();
+        options.title = "Емпирическая функция распеределения, построенная по вариационному ряду";
+    } else if (type.search( /classes/i ) >= 0) {
+        dataForChart = this.classesForChart();
+        options.title = "Емпирическая функция распределения, построенная по классам";
+    }
+
+    function drawChart() {
+        var data = new google.visualization.DataTable();
+
+        data.addColumn("number", "x");
+        data.addColumn("number", "y");
+
+        data.addRows(dataForChart);
+
+        var chart = new google.visualization.LineChart(canvas);
+        chart.draw(data, options);
+    }
 }
