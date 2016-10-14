@@ -1,9 +1,9 @@
-(function() {
+$(document).ready(function() {
 
     var dataObj;
 
-    window.loadFile = function(files) {
-        var file = files[0],
+    $("#input").on("change", function() {
+        var file = this.files[0],
             reader = new FileReader();
 
         reader.onload = function (e) {
@@ -14,26 +14,25 @@
             dataObj.insertBasicData($("#table"));
         };
         reader.readAsText(file);
-    }
-
-    window.$("#buildVarRow").click(function() {
-        dataObj.buildVarRow();
     });
 
-    window.$("#buildClasses").click(function () {
+    $("#buildVarRow").click(function() {
+        dataObj.buildVarRow();
+        $(".unVisible").removeClass("unVisible");
+    });
+
+    $("#buildClasses").click(function () {
         dataObj.buildClasses($("#classes"));
     });
 
-    window.$("#drawCharts").click(function() {
+    $("#drawCharts").click(function() {
         dataObj.drawHistogram(document.getElementById("divForHistogram"));
         dataObj.drawCharts(document.getElementById("divForChartVarRow"), "varrow");
         dataObj.drawCharts(document.getElementById("divForChartClasses"), "classes");
     });
 
-    //
-    window.$("#buildCharacterictics").click(function() {
+    $("#buildCharacterictics").click(function() {
         dataObj.buildCharacterictics($("#characterictics"));
 
     });
-
-})();
+});

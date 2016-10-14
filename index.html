@@ -3,20 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Data analysis</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<section class="form">
+<section class="container">
     <h1>Анализ данных</h1>
     <hr>
     <h3>Первичный статистический анализ. Часть I</h3>
 
-    <input id="input" type="file" accept="text/*" onchange="loadFile(this.files)"/>
-    <button id="buildVarRow">Построить вариационный ряд</button>
+    <br>
 
-    <br><br><br>
+    <center>
+        <input id="input" class="responsiveBtns" type="file" accept="text/*"/>
+        <br>
+        <button id="buildVarRow" class="responsiveBtns">Построить вариационный ряд</button>
+    </center>
 
-    <table id="table">
+    <br>
+
+    <table id="table" class="table table-responsive table-bordered">
         <th colspan="6">Вариационный ряд</th>
         <tr>
             <td>№</td>
@@ -28,21 +34,23 @@
         </tr>
     </table>
 
-    <br><br><br>
-
+    <br>
 </section>
 
 
-<section class="nextForms">
+<section class="container unVisible">
 
-    <br><br><br>
+    <br>
 
-    <button id="buildClasses">Разбить вариационный ряд на классы</button>
-    <button id="drawCharts">Построить графики</button>
+    <center>
+        <button id="buildClasses" class="responsiveBtns">Разбить вариационный ряд на классы</button>
+        <br><br>
+        <button id="drawCharts" class="responsiveBtns">Построить графики</button>
+    </center>
 
-    <br><br><br>
+    <br>
 
-    <table id="classes">
+    <table id="classes" class="table table-responsive table-bordered">
         <th colspan="5">Классы вариационного ряда</th>
         <tr>
             <td>№</td>
@@ -53,7 +61,7 @@
         </tr>
     </table>
 
-    <br><br><br>
+    <br>
 
     <div id="divForHistogram"></div>
     <div id="divForChartVarRow"></div>
@@ -62,15 +70,15 @@
 </section>
 
 
-<section class="nextForms">
+<section class="container unVisible">
 
-    <br><br><br>
+    <br>
 
-    <button id="buildCharacterictics">Характеристики выборки</button>
+    <button id="buildCharacterictics" class="responsiveBtns">Характеристики выборки</button>
 
-    <br><br><br>
+    <br><br>
 
-    <table id="characterictics">
+    <table id="characterictics" class="table table-responsive table-bordered">
         <th colspan="4">Характеристики выборки</th>
         <tr>
             <td></td>
@@ -80,7 +88,7 @@
         </tr>
     </table>
 
-    <br><br><br>
+    <br>
 
 </section>
 

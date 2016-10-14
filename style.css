@@ -1,39 +1,39 @@
-table, tr, td, th {
-    border: 1px solid lightgrey;
-    border-collapse: collapse;
-    padding: 5px;
-}
-
 th {
     background-color: lightgrey;
-}
-
-table {
-    display: inline-table;
-}
-
-.form {
-    margin-top: 5%;
-    margin-left: 15%;
-    margin-right: 15%;
-    background-color: white;
-    border: 0.5px solid lightgrey;
-    padding: 5px;
     text-align: center;
-    border-radius: 5px;
 }
 
-.nextForms {
+.container {
     margin-top: 1%;
-    margin-left: 15%;
-    margin-right: 15%;
     background-color: white;
     border: 0.5px solid lightgrey;
     padding: 5px;
     text-align: center;
     border-radius: 5px;
+}
+
+.unVisible {
+    visibility: hidden;
 }
 
 body {
     background-color: whitesmoke;
+}
+
+@media screen and (max-width: 499px) {
+    .responsiveBtns {
+        width: 70%;
+    }
+}
+
+@media screen and (min-width: 500px) and (max-width: 899px) {
+    .responsiveBtns {
+        width: 50%;
+    }
+}
+
+@media screen and (min-width: 900px) {
+    .responsiveBtns {
+        width: 30%;
+    }
 }
