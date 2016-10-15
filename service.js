@@ -10,19 +10,19 @@ $(document).ready(function() {
             var result = e.target.result;
             result = result.split("\n");
 
-            dataObj = new Data(result);
+            dataObj = new Helper(result);
             dataObj.insertBasicData($("#table"));
         };
         reader.readAsText(file);
     });
 
     $("#buildVarRow").click(function() {
-        dataObj.buildVarRow();
+        dataObj.insertVarRow($("#table"));
         $(".unVisible").removeClass("unVisible");
     });
 
     $("#buildClasses").click(function () {
-        dataObj.buildClasses($("#classes"));
+        dataObj.insertClasses($("#classes"), $("#numberClasses").val());
     });
 
     $("#drawCharts").click(function() {
@@ -32,7 +32,6 @@ $(document).ready(function() {
     });
 
     $("#buildCharacterictics").click(function() {
-        dataObj.buildCharacterictics($("#characterictics"));
-
+        dataObj.insertCharacterictics($("#characterictics"));
     });
 });
