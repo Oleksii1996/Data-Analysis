@@ -233,7 +233,7 @@ Data.prototype.buildDataForReley = function() {
 
     for (var i = 0; i < this.data.length; i++) {
         tmp += this.data[i]["frequency"];
-        arr.push({"value": this.data[i]["value"], "frequency": tmp});
+        arr.push({"value": this.data[i]["value"], "frequency": tmp / this.dimension});
     }
     return arr;
 };
