@@ -17,7 +17,7 @@
     <center>
         <input id="input" class="responsiveBtns" type="file" accept="text/*"/>
         <br>
-        <button id="buildVarRow" class="responsiveBtns">Построить вариационный ряд</button>
+        <button id="buildVarRow" class="responsiveBtns btn btn-default">Построить вариационный ряд</button>
     </center>
 
     <br>
@@ -45,9 +45,9 @@
     <center>
         <input id="numberClasses" type="text" class="responsiveBtns" placeholder="Количество классов"/>
         <br>
-        <button id="buildClasses" class="responsiveBtns">Разбить вариационный ряд на классы</button>
+        <button id="buildClasses" class="responsiveBtns btn btn-default">Разбить вариационный ряд на классы</button>
         <br><br>
-        <button id="drawCharts" class="responsiveBtns">Построить графики</button>
+        <button id="drawCharts" class="responsiveBtns btn btn-default">Построить графики</button>
     </center>
 
     <br>
@@ -76,7 +76,7 @@
 
     <br>
 
-    <button id="buildCharacterictics" class="responsiveBtns">Характеристики выборки</button>
+    <button id="buildCharacterictics" class="responsiveBtns btn btn-default">Характеристики выборки</button>
 
     <br><br>
 
@@ -92,7 +92,7 @@
 
     <br>
 
-    <button id="removeAnomalies" class="responsiveBtns">Найти и удалить аномальные значения</button>
+    <button id="removeAnomalies" class="responsiveBtns btn btn-default">Найти и удалить аномальные значения</button>
 
     <br><br>
 
@@ -103,17 +103,15 @@
     <hr>
     <br>
     <center>
-        <button id="drawProbabilisticGrid" class="responsiveBtns">Построить вероятностную сетку</button>
+        <button id="drawProbabilisticGrid" class="responsiveBtns btn btn-default">Построить вероятностную сетку</button>
         <br><br>
-        <button id="buildReleyParametr" class="responsiveBtns">Параметр распределения Релея</button>
+        <button id="buildReleyParametr" class="responsiveBtns btn btn-default">Параметр распределения Релея</button>
         <br><br>
-        <button id="drawReleyDensity" class="responsiveBtns">Плотность распределения Релея</button>
+        <button id="drawReleyDensity" class="responsiveBtns btn btn-default">Построить графики</button>
     </center>
 
-    <div id="divForProbabilisticGrid"></div>
     <br>
-    <div id="releyDensity"></div>
-    <br>
+
     <table id="releyParametr" class="table table-responsive table-bordered">
         <th colspan="4">Параметр распределения Релея</th>
         <tr>
@@ -123,6 +121,12 @@
             <td>Доверительный интервал</td>
         </tr>
     </table>
+    <br>
+    <div id="divForProbabilisticGrid"></div>
+    <br>
+    <div id="releyDensity"></div>
+    <br>
+    <div id="releyFunction"></div>
     <br><br>
 </section>
 

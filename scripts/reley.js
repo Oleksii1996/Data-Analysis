@@ -5,11 +5,17 @@ function Reley(givenData, sigma) {
 
 // плотность распределения Релея
 Reley.prototype.f = function(x) {
+	if (x < 0) {
+		return NaN;
+	}
 	return (x / Math.pow(this.sigma, 2)) * Math.exp(-(Math.pow(x, 2)) / (2 * Math.pow(this.sigma, 2)));
 };
 
 // функция распределения 
 Reley.prototype.F = function(x) {
+	if (x < 0) {
+		return NaN;
+	}
 	return 1 - Math.exp(-(Math.pow(x, 2)) / (2 * Math.pow(this.sigma, 2)));
 };
 
@@ -24,7 +30,7 @@ Reley.prototype.sigmaEvaluation = function() {
 
 // среднеквадратическое отклонение параметра сигма
 Reley.prototype.sigmaRms = function() {
-	return this.sigma * Math.sqrt(2 - (Math.PI / 2));
+	return this.sigmaEvaluation() * Math.sqrt(2 - (Math.PI / 2));
 };
 
 Reley.prototype.buildData = function() {
@@ -72,25 +78,80 @@ Reley.prototype.drawChart = function(canvas) {
 	};
 };
 
-Reley.prototype.drawDensityOnHistogram = function(data, canvas) {
+Reley.prototype.drawDistributionEmpiricFunc = function(data, canvas) {
 	var dataForChart = [],
 		options = {
 			width: "95%",
             height: 400,
             bar: {groupWidth: "100%"},
             legend: "none",
-            title: "Функция плотности"
+            title: "Функция распределения, наложенная на емпирическую функцию вариационного ряда"
+		};
+
+	google.charts.load("current", {packages:['corechart']});
+
+	console.log(data);
+	for (var i = 0; i < data.length; i++) {
+		dataForChart.push([data[i][0], data[i][1], this.F(data[i][0])]);
+	}
+
+	google.charts.setOnLoadCallback(draw);
+
+	function draw() {
+		var data = new google.visualization.DataTable();
+
+        data.addColumn("number", "x");
+        data.addColumn("number", "y");
+        data.addColumn("number", "y2");
+
+        data.addRows(dataForChart);
+
+        var chart = new google.visualization.LineChart(canvas);
+        chart.draw(data, options);
+	};
+};
+
+Reley.prototype.drawDensityOnHistogram = function(classes, canvas) {
+	var dataForChart = [], tmp = 0,
+		options = {
+			width: "95%",
+            height: 400,
+            bar: {groupWidth: "100%"},
+            legend: "none",
+            title: "Функция плотности, наложенная на гистограмму"
 		};
 		
 	google.charts.load("current", {packages:['corechart']});
 
-	/*for (var i = 0; i < this.givenData.length; i++) {
-		dataForChart.push([this.givenData[i]["value"], this.f(this.givenData[i]["value"])]);
-	}*/
-	for (i = 0; i < data.length; i++) {
-		data[i].push(this.f(data[i][0])*(i+1));
-		dataForChart.push(data[i]);
-	}
+    for (var j = 0; j < classes[0].length; j++) {
+        tmp += classes[0][j]["frequency"];
+    }
+    dataForChart.push([classes[0][0]["value"], 0, this.f(classes[0][0]["value"])]);
+    dataForChart.push([classes[0][0]["value"], (tmp / this.givenData.length), this.f(classes[0][0]["value"])]);
+
+    for (var k = 0; k < classes[0].length; k++) {
+        dataForChart.push([classes[0][k]["value"], (tmp / this.givenData.length), this.f(classes[0][k]["value"])]);
+    }
+
+    dataForChart.push([classes[0][classes[0].length-1]["value"], (tmp / this.givenData.length), this.f(classes[0][classes[0].length-1]["value"])]);
+    dataForChart.push([classes[0][classes[0].length-1]["value"], 0, this.f(classes[0][classes[0].length-1]["value"])]);
+    tmp = 0;
+    
+    for (var i = 1; i < classes.length; i++) {
+        for (var j = 0; j < classes[i].length; j++) {
+            tmp += classes[i][j]["frequency"];
+        }
+        dataForChart.push([classes[i-1][classes[i-1].length-1]["value"], 0, this.f(classes[i-1][classes[i-1].length-1]["value"])]);
+        dataForChart.push([classes[i-1][classes[i-1].length-1]["value"], (tmp / this.givenData.length), this.f(classes[i-1][classes[i-1].length-1]["value"])]);
+
+        for (var k = 0; k < classes[i].length; k++) {
+        	dataForChart.push([classes[i][k]["value"], (tmp / this.givenData.length), this.f(classes[i][k]["value"])]);
+        }
+
+        dataForChart.push([classes[i][classes[i].length-1]["value"], (tmp / this.givenData.length), this.f(classes[i][classes[i].length-1]["value"])]);
+        dataForChart.push([classes[i][classes[i].length-1]["value"], 0, this.f(classes[i][classes[i].length-1]["value"])]);
+        tmp = 0;
+    }
 
 	google.charts.setOnLoadCallback(draw);
 

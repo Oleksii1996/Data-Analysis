@@ -58,7 +58,7 @@ $(document).ready(function() {
 
     $("#drawProbabilisticGrid").click(function() {
         if (releyObj == undefined) {
-            releyObj = new Reley(dataObj.buildDataForReley(), 0.01);
+            releyObj = new Reley(dataObj.buildDataForReley(), 20);
         }
         releyObj.drawChart(document.getElementById("divForProbabilisticGrid"));
     });
@@ -74,6 +74,7 @@ $(document).ready(function() {
         if (releyObj == undefined) {
             releyObj = new Reley(dataObj.buildDataForReley(), 20);
         }
-        releyObj.drawDensityOnHistogram(dataObj.histogramForChart(), document.getElementById("releyDensity"));
+        releyObj.drawDensityOnHistogram(dataObj.classes, document.getElementById("releyDensity"));
+        releyObj.drawDistributionEmpiricFunc(dataObj.varRowForChart(), document.getElementById("releyFunction"));
     });
 });

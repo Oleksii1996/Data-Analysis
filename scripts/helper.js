@@ -111,8 +111,8 @@ Helper.prototype.histogramForChart = function() {
         tmp += this.classes[0][j]["frequency"];
     }
     dataForChart.push([this.classes[0][0]["value"], 0]);
-    dataForChart.push([this.classes[0][0]["value"], tmp]);
-    dataForChart.push([this.classes[0][this.classes[0].length-1]["value"], tmp]);
+    dataForChart.push([this.classes[0][0]["value"], (tmp / this.dimension)]);
+    dataForChart.push([this.classes[0][this.classes[0].length-1]["value"], (tmp / this.dimension)]);
     dataForChart.push([this.classes[0][this.classes[0].length-1]["value"], 0]);
     tmp = 0;
     
@@ -121,8 +121,8 @@ Helper.prototype.histogramForChart = function() {
             tmp += this.classes[i][j]["frequency"];
         }
         dataForChart.push([this.classes[i-1][this.classes[i-1].length-1]["value"], 0]);
-        dataForChart.push([this.classes[i-1][this.classes[i-1].length-1]["value"], tmp]);
-        dataForChart.push([this.classes[i][this.classes[i].length-1]["value"], tmp]);
+        dataForChart.push([this.classes[i-1][this.classes[i-1].length-1]["value"], (tmp / this.dimension)]);
+        dataForChart.push([this.classes[i][this.classes[i].length-1]["value"], (tmp / this.dimension)]);
         dataForChart.push([this.classes[i][this.classes[i].length-1]["value"], 0]);
         tmp = 0;
     }  
