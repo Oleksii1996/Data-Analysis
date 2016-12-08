@@ -37,7 +37,7 @@ $(document).ready(function() {
         $("#divForHistogram").html("");
         $("#divForChartVarRow").html("");
         $("#divForChartClasses").html("");
-        dataObj.drawHistogram(document.getElementById("divForHistogram"));
+        dataObj.drawCharts(document.getElementById("divForHistogram"), "histogram");
         dataObj.drawCharts(document.getElementById("divForChartVarRow"), "varrow");
         dataObj.drawCharts(document.getElementById("divForChartClasses"), "classes");
     });
@@ -58,7 +58,7 @@ $(document).ready(function() {
 
     $("#drawProbabilisticGrid").click(function() {
         if (releyObj == undefined) {
-            releyObj = new Reley(dataObj.buildDataForReley(), 20);
+            releyObj = new Reley(dataObj.buildDataForReley(), 0.01);
         }
         releyObj.drawChart(document.getElementById("divForProbabilisticGrid"));
     });
@@ -72,8 +72,8 @@ $(document).ready(function() {
 
     $("#drawReleyDensity").click(function() {
         if (releyObj == undefined) {
-            releyObj = new Reley(dataObj.buildDataForReley(), 0.5);
+            releyObj = new Reley(dataObj.buildDataForReley(), 20);
         }
-        releyObj.dr(document.getElementById("releyDensity"));
+        releyObj.drawDensityOnHistogram(dataObj.histogramForChart(), document.getElementById("releyDensity"));
     });
 });

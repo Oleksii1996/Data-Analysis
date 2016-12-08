@@ -103,36 +103,31 @@ Helper.prototype.classesForChart = function() {
     return dataForChart;
 };
 
-// рисуем гистограмму
-Helper.prototype.drawHistogram = function(canvas) {
-    google.charts.load("current", {packages:['corechart']});
-
+// формируем данные для отрисовки гистограммы
+Helper.prototype.histogramForChart = function() {
     var dataForChart = [], tmp = 0;
-    dataForChart.push(["Element", "", { role: "annotation" } ]);
-    for (var i = 0; i < this.classes.length; i++) {
+
+    for (var j = 0; j < this.classes[0].length; j++) {
+        tmp += this.classes[0][j]["frequency"];
+    }
+    dataForChart.push([this.classes[0][0]["value"], 0]);
+    dataForChart.push([this.classes[0][0]["value"], tmp]);
+    dataForChart.push([this.classes[0][this.classes[0].length-1]["value"], tmp]);
+    dataForChart.push([this.classes[0][this.classes[0].length-1]["value"], 0]);
+    tmp = 0;
+    
+    for (var i = 1; i < this.classes.length; i++) {
         for (var j = 0; j < this.classes[i].length; j++) {
             tmp += this.classes[i][j]["frequency"];
         }
-        dataForChart.push(["[" + this.classes[i][0]["value"] + ", " + this.classes[i][this.classes[i].length-1]["value"] + "]",
-            (tmp / this.dimension), (tmp / this.dimension)]);
+        dataForChart.push([this.classes[i-1][this.classes[i-1].length-1]["value"], 0]);
+        dataForChart.push([this.classes[i-1][this.classes[i-1].length-1]["value"], tmp]);
+        dataForChart.push([this.classes[i][this.classes[i].length-1]["value"], tmp]);
+        dataForChart.push([this.classes[i][this.classes[i].length-1]["value"], 0]);
         tmp = 0;
-    }
+    }  
 
-    google.charts.setOnLoadCallback(drawH);
-
-    function drawH() {
-        var data = google.visualization.arrayToDataTable(dataForChart);
-
-        var options = {
-            title: "Гистограмма",
-            width: "95%",
-            height: 400,
-            bar: {groupWidth: "100%"},
-            legend: "none"
-        };
-        var chart = new google.visualization.ColumnChart(canvas);
-        chart.draw(data, options);
-    }
+    return dataForChart;
 };
 
 // рисуем график емпирической функции распределения
@@ -153,6 +148,9 @@ Helper.prototype.drawCharts = function(canvas, type) {
     } else if (type.search( /classes/i ) >= 0) {
         dataForChart = this.classesForChart();
         options.title = "Емпирическая функция распределения, построенная по классам";
+    } else if (type.search( /histogram/i ) >= 0) {
+        dataForChart = this.histogramForChart();
+        options.title = "Гистограмма";
     }
 
     google.charts.setOnLoadCallback(drawChart);

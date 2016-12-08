@@ -72,7 +72,7 @@ Reley.prototype.drawChart = function(canvas) {
 	};
 };
 
-Reley.prototype.dr = function(canvas) {
+Reley.prototype.drawDensityOnHistogram = function(data, canvas) {
 	var dataForChart = [],
 		options = {
 			width: "95%",
@@ -84,8 +84,12 @@ Reley.prototype.dr = function(canvas) {
 		
 	google.charts.load("current", {packages:['corechart']});
 
-	for (var i = 0; i < this.data.length; i++) {
+	/*for (var i = 0; i < this.givenData.length; i++) {
 		dataForChart.push([this.givenData[i]["value"], this.f(this.givenData[i]["value"])]);
+	}*/
+	for (i = 0; i < data.length; i++) {
+		data[i].push(this.f(data[i][0])*(i+1));
+		dataForChart.push(data[i]);
 	}
 
 	google.charts.setOnLoadCallback(draw);
@@ -93,8 +97,9 @@ Reley.prototype.dr = function(canvas) {
 	function draw() {
 		var data = new google.visualization.DataTable();
 
-        data.addColumn("number", "t");
-        data.addColumn("number", "z");
+        data.addColumn("number", "x");
+        data.addColumn("number", "y");
+        data.addColumn("number", "y2");
 
         data.addRows(dataForChart);
 
