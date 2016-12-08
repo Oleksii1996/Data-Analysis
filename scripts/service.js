@@ -57,7 +57,23 @@ $(document).ready(function() {
     });
 
     $("#drawProbabilisticGrid").click(function() {
-        reley = new Reley(dataObj.buildDataForReley(), 20);
-        reley.drawChart(document.getElementById("divForProbabilisticGrid"));
+        if (releyObj == undefined) {
+            releyObj = new Reley(dataObj.buildDataForReley(), 20);
+        }
+        releyObj.drawChart(document.getElementById("divForProbabilisticGrid"));
+    });
+
+    $("#buildReleyParametr").click(function() {
+        if (releyObj == undefined) {
+            releyObj = new Reley(dataObj.buildDataForReley(), 20);
+        }
+        releyObj.insertReleyParametr($("#releyParametr"));
+    });
+
+    $("#drawReleyDensity").click(function() {
+        if (releyObj == undefined) {
+            releyObj = new Reley(dataObj.buildDataForReley(), 0.5);
+        }
+        releyObj.dr(document.getElementById("releyDensity"));
     });
 });

@@ -92,7 +92,7 @@
 
     <br>
 
-    <button id="removeAnomalies">Найти и удалить аномальные значения</button>
+    <button id="removeAnomalies" class="responsiveBtns">Найти и удалить аномальные значения</button>
 
     <br><br>
 
@@ -102,9 +102,27 @@
     <h3>Часть II</h3>
     <hr>
     <br>
-    <button id="drawProbabilisticGrid" class="responsiveBtns">Построить вероятностную сетку</button>
+    <center>
+        <button id="drawProbabilisticGrid" class="responsiveBtns">Построить вероятностную сетку</button>
+        <br><br>
+        <button id="buildReleyParametr" class="responsiveBtns">Параметр распределения Релея</button>
+        <br><br>
+        <button id="drawReleyDensity" class="responsiveBtns">Плотность распределения Релея</button>
+    </center>
 
     <div id="divForProbabilisticGrid"></div>
+    <br>
+    <div id="releyDensity"></div>
+    <br>
+    <table id="releyParametr" class="table table-responsive table-bordered">
+        <th colspan="4">Параметр распределения Релея</th>
+        <tr>
+            <td>Параметр</td>
+            <td>Значения оценки</td>
+            <td>Среднеквадратическое отклонение</td>
+            <td>Доверительный интервал</td>
+        </tr>
+    </table>
     <br><br>
 </section>
 
