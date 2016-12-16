@@ -2,6 +2,7 @@ $(document).ready(function() {
 
     var dataObj,
         releyObj,
+        pearsonObj,
         tableForVarRow,
         tableForClasses = $("#classes").html(),
         tableForCharacteristics = $("#characterictics").html();
@@ -76,5 +77,10 @@ $(document).ready(function() {
         }
         releyObj.drawDensityOnHistogram(dataObj.classes, document.getElementById("releyDensity"));
         releyObj.drawDistributionEmpiricFunc(dataObj.varRowForChart(), document.getElementById("releyFunction"));
+    });
+
+    $("#pearsonAnalyze").click(function() {
+        pearsonObj = new PearsonCriterion(dataObj.classes, releyObj.sigma);
+        pearsonObj.fillTable(0.05, $("#pearsonCriterion"));
     });
 });

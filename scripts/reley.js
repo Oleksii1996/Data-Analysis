@@ -1,5 +1,5 @@
-function Reley(givenData, sigma) {
-	this.givenData = givenData, this.sigma = sigma, this.data = [];
+function Reley(givenData) {
+	this.givenData = givenData, this.sigma = this.sigmaEvaluation(), this.data = [];
 	this.buildData();
 }
 
@@ -90,7 +90,6 @@ Reley.prototype.drawDistributionEmpiricFunc = function(data, canvas) {
 
 	google.charts.load("current", {packages:['corechart']});
 
-	console.log(data);
 	for (var i = 0; i < data.length; i++) {
 		dataForChart.push([data[i][0], data[i][1], this.F(data[i][0])]);
 	}
@@ -169,22 +168,8 @@ Reley.prototype.drawDensityOnHistogram = function(classes, canvas) {
 	};
 };
 
-// квантиль Up
-Reley.prototype.U = function() {
-    var c0 = 2.515517,
-        c1 = 0.802853,
-        c2 = 0.010328,
-        d1 = 1.432788,
-        d2 = 0.1892659,
-        d3 = 0.001308,
-        a = 0.05,
-        t = Math.sqrt(-2 * Math.log(a));
-
-    return t - (c0 + c1*t + c2*Math.pow(t, 2)) / (1 + d1*t + d2*Math.pow(t, 2) + d3*Math.pow(t, 3));
-};
-
 //
 Reley.prototype.insertReleyParametr = function(table) {
-	table.append("<tr><td>" + this.sigma + "</td><td>" + this.sigmaEvaluation().toFixed(4) + "</td><td>" + this.sigmaRms().toFixed(4) + "</td>" +
-		"<td>[" + (this.sigma - this.U()*this.sigmaRms()).toFixed(4) + ", " + (this.sigma + this.U()*this.sigmaRms()).toFixed(4) + "]</td></tr>");
+	table.append("<tr><td>" + this.sigma.toFixed(4) + "</td><td>" + this.sigmaEvaluation().toFixed(4) + "</td><td>" + this.sigmaRms().toFixed(4) + "</td>" +
+		"<td>[" + (this.sigma - this.sigmaRms()).toFixed(4) + ", " + (this.sigma + this.sigmaRms()).toFixed(4) + "]</td></tr>");
 };

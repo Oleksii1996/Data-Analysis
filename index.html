@@ -108,6 +108,8 @@
         <button id="buildReleyParametr" class="responsiveBtns btn btn-default">Параметр распределения Релея</button>
         <br><br>
         <button id="drawReleyDensity" class="responsiveBtns btn btn-default">Построить графики</button>
+        <br><br>
+        <button id="pearsonAnalyze" class="responsiveBtns btn btn-default">Критерий согласия Пирсона</button>
     </center>
 
     <br>
@@ -127,6 +129,15 @@
     <div id="releyDensity"></div>
     <br>
     <div id="releyFunction"></div>
+    <br>
+    <table id="pearsonCriterion" class="table table-responsive table-bordered">
+        <th colspan="3">Критерий согласия Пирсона</th>
+        <tr>
+            <td>X<sup>2</sup></td>
+            <td>X<sup>2</sup><sub>a, n</sub></td>
+            <td>Вывод</td>
+        </tr>
+    </table>
     <br><br>
 </section>
 
@@ -136,5 +147,6 @@
 <script src="scripts/helper.js"></script>
 <script src="scripts/reley.js"></script>
 <script src="scripts/service.js"></script>
+<script src="scripts/pearson.js"></script>
 </body>
 </html>
