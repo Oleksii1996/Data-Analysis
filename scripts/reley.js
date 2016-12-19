@@ -118,37 +118,37 @@ Reley.prototype.drawDensityOnHistogram = function(classes, canvas) {
             bar: {groupWidth: "100%"},
             legend: "none",
             title: "Функция плотности, наложенная на гистограмму"
-		};
+		}, h = classes[0][classes[0].length-1]["value"] - classes[0][0]["value"];
 		
 	google.charts.load("current", {packages:['corechart']});
 
     for (var j = 0; j < classes[0].length; j++) {
         tmp += classes[0][j]["frequency"];
     }
-    dataForChart.push([classes[0][0]["value"], 0, this.f(classes[0][0]["value"])]);
-    dataForChart.push([classes[0][0]["value"], (tmp / this.givenData.length), this.f(classes[0][0]["value"])]);
+    dataForChart.push([classes[0][0]["value"], 0, h*this.f(classes[0][0]["value"])]);
+    dataForChart.push([classes[0][0]["value"], (tmp / this.givenData.length), h*this.f(classes[0][0]["value"])]);
 
     for (var k = 0; k < classes[0].length; k++) {
-        dataForChart.push([classes[0][k]["value"], (tmp / this.givenData.length), this.f(classes[0][k]["value"])]);
+        dataForChart.push([classes[0][k]["value"], (tmp / this.givenData.length), h*this.f(classes[0][k]["value"])]);
     }
 
-    dataForChart.push([classes[0][classes[0].length-1]["value"], (tmp / this.givenData.length), this.f(classes[0][classes[0].length-1]["value"])]);
-    dataForChart.push([classes[0][classes[0].length-1]["value"], 0, this.f(classes[0][classes[0].length-1]["value"])]);
+    dataForChart.push([classes[0][classes[0].length-1]["value"], (tmp / this.givenData.length), h*this.f(classes[0][classes[0].length-1]["value"])]);
+    dataForChart.push([classes[0][classes[0].length-1]["value"], 0, h*this.f(classes[0][classes[0].length-1]["value"])]);
     tmp = 0;
     
     for (var i = 1; i < classes.length; i++) {
         for (var j = 0; j < classes[i].length; j++) {
             tmp += classes[i][j]["frequency"];
         }
-        dataForChart.push([classes[i-1][classes[i-1].length-1]["value"], 0, this.f(classes[i-1][classes[i-1].length-1]["value"])]);
-        dataForChart.push([classes[i-1][classes[i-1].length-1]["value"], (tmp / this.givenData.length), this.f(classes[i-1][classes[i-1].length-1]["value"])]);
+        dataForChart.push([classes[i-1][classes[i-1].length-1]["value"], 0, h*this.f(classes[i-1][classes[i-1].length-1]["value"])]);
+        dataForChart.push([classes[i-1][classes[i-1].length-1]["value"], (tmp / this.givenData.length), h*this.f(classes[i-1][classes[i-1].length-1]["value"])]);
 
         for (var k = 0; k < classes[i].length; k++) {
-        	dataForChart.push([classes[i][k]["value"], (tmp / this.givenData.length), this.f(classes[i][k]["value"])]);
+        	dataForChart.push([classes[i][k]["value"], (tmp / this.givenData.length), h*this.f(classes[i][k]["value"])]);
         }
 
-        dataForChart.push([classes[i][classes[i].length-1]["value"], (tmp / this.givenData.length), this.f(classes[i][classes[i].length-1]["value"])]);
-        dataForChart.push([classes[i][classes[i].length-1]["value"], 0, this.f(classes[i][classes[i].length-1]["value"])]);
+        dataForChart.push([classes[i][classes[i].length-1]["value"], (tmp / this.givenData.length), h*this.f(classes[i][classes[i].length-1]["value"])]);
+        dataForChart.push([classes[i][classes[i].length-1]["value"], 0, h*this.f(classes[i][classes[i].length-1]["value"])]);
         tmp = 0;
     }
 
@@ -170,6 +170,6 @@ Reley.prototype.drawDensityOnHistogram = function(classes, canvas) {
 
 //
 Reley.prototype.insertReleyParametr = function(table) {
-	table.append("<tr><td>" + this.sigma.toFixed(4) + "</td><td>" + this.sigmaEvaluation().toFixed(4) + "</td><td>" + this.sigmaRms().toFixed(4) + "</td>" +
+	table.append("<tr><td>sigma</td><td>" + this.sigmaEvaluation().toFixed(4) + "</td><td>" + this.sigmaRms().toFixed(4) + "</td>" +
 		"<td>[" + (this.sigma - this.sigmaRms()).toFixed(4) + ", " + (this.sigma + this.sigmaRms()).toFixed(4) + "]</td></tr>");
 };
